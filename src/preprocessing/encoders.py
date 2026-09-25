@@ -3,22 +3,23 @@ from base import BaseEstimator, TransformerMixin
 
 
 class LabelEncoder(BaseEstimator, TransformerMixin):
-    def fit(self, y, X=None):
-        y = np.asarray(y)
-        self.classes_ = np.unique(y)
+    def fit(self, X, y=None):
+        X = np.asarray(X)
+        self.classes_ = np.unique(X)
         return self
 
-    def transform(self, y):
+    def transform(self, X):
         self._check_is_fitted(["classes_"])
-        y = np.asarray(y)
+        X = np.asarray(X)
 
-        encoded = np.searchsorted(self.classes_, y)
+        class_to_idx = {cls: idx for idx, cls in enumerate(self.classes_)}
 
-        if not np.all(self.classes_[encoded] == y):
-            unseen = set(y) - set(self.classes_)
+        encoded = np.array([class_to_idx.get(val, -1) for val in X])
+
+        if np.any(encoded == -1):
+            unseen = set(X[encoded == -1]) - set(self.classes_)
             raise ValueError(
-                f"y contains previously unseen labels: {unseen}. "
-                "Call fit() first or use known labels only."
+                f"X contains previously unseen labels: {unseen}. Call fit() first."
             )
 
         return encoded.astype(int)
@@ -26,16 +27,14 @@ class LabelEncoder(BaseEstimator, TransformerMixin):
     def inverse_transform(self, X):
         self._check_is_fitted(["classes_"])
         X = np.asarray(X, dtype=int)
-
         if np.any((X < 0) | (X >= len(self.classes_))):
             raise ValueError(
                 f"X contains indices outside valid range [0, {len(self.classes_) - 1}]"
             )
-
         return self.classes_[X]
 
     def fit_transform(self, X, y=None):
-        return self.fit(y).transform(y)
+        return self.fit(X, y).transform(X)
 
 
 class OneHotEncoder(BaseEstimator, TransformerMixin):

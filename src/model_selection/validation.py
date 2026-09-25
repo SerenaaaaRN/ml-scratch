@@ -3,10 +3,10 @@ import copy
 
 
 class KFold:
-    def __init__(self, n_split=5, shuffle=True, random_state=None):
-        if n_split < 2:
+    def __init__(self, n_splits=5, shuffle=True, random_state=None):
+        if n_splits < 2:
             raise ValueError("n_splits must be at least 2")
-        self.n_splits = n_split
+        self.n_splits = n_splits
         self.shuffle = shuffle
         self.random_state = random_state
 
@@ -39,7 +39,7 @@ class KFold:
 
 def cross_val_score(model, X, y, cv=5):
     if isinstance(cv, int):
-        kfold = KFold(n_split=cv, shuffle=True, random_state=42)
+        kfold = KFold(n_splits=cv, shuffle=True, random_state=42)
     elif isinstance(cv, KFold):
         kfold = cv
     else:

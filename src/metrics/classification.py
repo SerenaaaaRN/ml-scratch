@@ -45,7 +45,7 @@ def precision_recall_f1(y_true, y_pred, average="macro"):
 
         case "macro":
             classes = np.unique(np.concatenate([y_true, y_pred]))
-            precision, recalls, f1s = [], [], []
+            precisions, recalls, f1s = [], [], []
 
             for cls in classes:
                 tp = np.sum((y_true == cls) & (y_pred == cls))
@@ -56,15 +56,15 @@ def precision_recall_f1(y_true, y_pred, average="macro"):
                 r = tp / (tp + fn) if (tp + fn) > 0 else 0.0
                 f = 2 * p * r / (p + r) if (p + r) > 0 else 0.0
 
-                precision.append(p)
+                precisions.append(p)
                 recalls.append(r)
                 f1s.append(f)
 
-                return (
-                    float(np.mean(precision)),
-                    float(np.mean(recalls)),
-                    float(np.mean(f1s)),
-                )
+            return (
+                float(np.mean(precisions)),
+                float(np.mean(recalls)),
+                float(np.mean(f1s)),
+            )
 
         case "micro":
             classes = np.unique(np.concatenate([y_true, y_pred]))

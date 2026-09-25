@@ -38,7 +38,7 @@ class LabelEncoder(BaseEstimator, TransformerMixin):
         return self.fit(y).transform(y)
 
 
-class OneHotEncoding(BaseEstimator, TransformerMixin):
+class OneHotEncoder(BaseEstimator, TransformerMixin):
     def __init__(self, handle_unknown="error"):
         self.handle_unknown = handle_unknown
 
